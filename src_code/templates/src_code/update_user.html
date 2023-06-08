@@ -1,0 +1,36 @@
+{% extends 'src_code/basics/base.html' %}
+
+{% load crispy_forms_tags %}
+{% block content %}
+<body>
+
+
+
+<br>
+    <div class="bg-grey-lighter min-h-screen flex flex-col">
+        <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
+            <div class="bg-white px-6 py-8 rounded shadow-md text-black w-full">
+                <h1 class="mb-8 text-3xl text-center">Update user</h1>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <fieldset>
+                        {{form|crispy}}
+                    </fieldset>
+                    <button
+                    type="submit"
+                    class="w-full text-center py-3 rounded bg-green-400 text-white hover:bg-green-500 focus:outline-none my-1"
+                >Update </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        document.getElementById('div_id_user').hidden = true
+        document.getElementById('div_id_followers').hidden = true
+        document.getElementById('div_id_following').hidden = true
+        document.getElementById('div_id_bool_abuse').hidden = true
+        document.getElementById('div_id_bool_hate').hidden = true
+    </script>
+
+{% endblock content %}

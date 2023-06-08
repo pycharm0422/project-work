@@ -1,0 +1,134 @@
+{% extends 'src_code/basics/base.html' %}
+
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+<div id="thisdiv">
+    
+    
+    <section class="text-gray-400 bg-gray-900 body-font relative">
+    <div class="container px-5 py-8 mx-auto">
+        <div class="lg:w-1/2 w-full mb-6 lg:mb-0">
+            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-white">Message </h1>
+            <div class="h-1 w-20 bg-indigo-500 rounded"></div>
+        </div>  <br>
+    <div id="display">
+
+        <!-- <div class="container darker">
+          <b>Tom</b><p>Hello Everyone, How Are You Guys Doing?</p>
+          <span class="time-left">20th, April 2021</span>
+        </div> -->
+        <br><br>
+    </div>
+    <input type="hidden" name="main_user" id="authencticated_user" value="{{request.user}}">
+    </div>
+    </section>
+
+
+
+
+    <script>
+        const func = $(document).ready(function () {
+
+            setInterval(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: "/getMessages/{{receiver_obj}}",
+                    success: function (response) {
+                        console.log(response);
+                        $("#display").empty();
+                        var x = document.getElementById("authencticated_user").value;
+                        for (var key in response.messages) {
+                            if (response.messages[key].sender == x){
+
+                                var temp = "<div class='container darker'><b>"
+                                      + 
+                                      " <div class='user'> you</div> " 
+                                      + 
+                                      "</b><p>" + response.messages[key].message + "<br><br>"
+                                $("#display").append(temp);
+                            }else{
+                                var temp = "<div class='container darker'><b>"
+                                      + 
+                                      " <div class='user'> {{request.user.username}} </div> " 
+                                      + 
+                                      "</b><p>" + response.messages[key].message
+                                $("#display").append(temp);
+                            }
+                        }
+                    },
+                    error: function (response) {
+                        console.log("error detected")
+                        alert("You are blocked")
+                        window.location = "http://127.0.0.1:8000/";
+                    }
+                });
+            }, 1000);
+        })
+    </script>
+
+
+
+</div>
+
+
+
+
+
+<section class="text-gray-400 bg-gray-900 body-font relative">
+    <div class="container px-5 py-8 mx-auto">
+<form action="" id="post-form">
+    {% csrf_token %}
+    <fieldset>
+        <input type="hidden" name="receiver" id="receiver" value="{{receiver_obj}}" />
+        
+
+             
+              <div class="lg:w-1/2 md:w-2/3 mx-auto">
+                <div class="flex flex-wrap -m-2">
+               
+                  <div class="p-2 w-full">
+                    <div class="relative">
+                      <label for="message" class="leading-7 text-sm text-gray-400">Message</label>
+                      <textarea id="message" name="message" class="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 h-32 text-base outline-none text-gray-100 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
+                    </div>
+                  </div>
+                 
+               
+                </div>
+              </div>
+              
+              
+            </fieldset>
+            <button class="flex mx-auto mt-16 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg" type="submit" name="reload">Message</button>
+        </form>
+        <br><br>
+    </div>
+</section>
+
+
+
+
+
+<script type="text/javascript">
+    $(document).on('submit', '#post-form', function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            type: 'POST',
+            url: '/send',
+            data: {
+                username: $('#receiver').val(),
+                message: $('#message').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            },
+            
+            
+            
+        });
+        
+        document.getElementById('message').value = ''
+    });
+</script>
+{% endblock content %}
